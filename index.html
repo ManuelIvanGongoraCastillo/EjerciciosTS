@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        #todo-list {
+            list-style: none;
+            padding: 0;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Tareas</h1>
+    <ul id="todo-list"></ul>
+    <input type="text" id="new-task" placeholder="Nueva tarea">
+    <button onclick="addTask()">Agregar</button>
+    
+    <script>
+        class TodoItem {
+            constructor(id, task, completed = false) {
+                this.id = id;
+                this.task = task;
+                this.completed = completed;
+            }
+        }
+
+        class TodoCollection {
+            constructor(userName, todos = []) {
+                this.userName = userName;
+                this.todos = todos;
+                this.nextId = todos.length + 1;
+            }
+            
+            addTodo(task) {
+                let newTodo = new TodoItem(this.nextId++, task);
+                this.todos.push(newTodo);
+                renderTodos();
+            }
+        }
+
+        let collection = new TodoCollection("Adam", [
+            new TodoItem(1, "Buy Flowers"),
+            new TodoItem(2, "Get Shoes"),
+            new TodoItem(3, "Collect Tickets"),
+            new TodoItem(4, "Call Joe", true)
+        ]);
+
+        function renderTodos() {
+            let list = document.getElementById("todo-list");
+            list.innerHTML = "";
+            collection.todos.forEach(todo => {
+                let li = document.createElement("li");
+                li.textContent = todo.task;
+                if (todo.completed) {
+                    li.classList.add("completed");
+                }
+                list.appendChild(li);
+            });
+        }
+
+        function addTask() {
+            let taskInput = document.getElementById("new-task");
+            if (taskInput.value.trim() !== "") {
+                collection.addTodo(taskInput.value.trim());
+                taskInput.value = "";
+            }
+        }
+
+        renderTodos();
+    </script>
+</body>
+</html>
